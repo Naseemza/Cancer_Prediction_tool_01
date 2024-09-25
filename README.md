@@ -1,19 +1,29 @@
-**Program Name (Replace with Your Program's Name)
-Overview
-This R program analyzes PDB (Protein Data Bank) structures using entropy and energy data. The program utilizes various machine learning and statistical techniques to provide insights, such as cluster analysis, convex hulls, and visualization using UMAP (Uniform Manifold Approximation and Projection). It handles both single and multi-chain PDB files and provides detailed results that can be used for further biological research, including cancer-related studies.
+# **PDB Structure Analysis Program**
 
-The program generates two main plots:
+## Overview
 
-PDBid-enhanced-convex-hill-plot.png
-PDBid-umap-kmeans-plot.png
-Prerequisites
-Required R Libraries
-The program depends on several R libraries, which you need to install if you haven't already. Here’s a list of the libraries used in the program:
+This R program performs analysis on **PDB (Protein Data Bank)** structures using entropy and energy data. It leverages various statistical and machine learning techniques to cluster and analyze structural data. The program can handle single and multi-chain PDB files, providing detailed results like silhouette scores, convex hull areas, RMSE, and SER values. Two visualizations are also generated to assist in understanding the analysis: an **Enhanced Convex Hill Plot** and a **UMAP-KMeans Clustering Plot**.
 
-r
-Copy code
+## Features
+
+- Automatic chain selection for PDB structures with multiple chains.
+- Computes important metrics like **Silhouette Score**, **Hull Area**, **PEA-Variance**, **RMSE**, **SER**, and **SER-scaled** values.
+- Generates two plots:
+  - `PDBid-enhanced-convex-hill-plot.png`
+  - `PDBid-umap-kmeans-plot.png`
+- Supports further biological and cancer-related research using PDB analysis.
+
+## Prerequisites
+
+### Required R Libraries
+
+The following R packages are required to run the program. You can install them using the command below:
+
+```r
 install.packages(c("bio3d", "cluster", "ggplot2", "umap", "readxl", "dplyr", 
                    "geometry", "MASS", "FactoMineR", "dbscan", "sf", 
                    "ggrepel", "neuralnet", "gridExtra", "reshape2"))
-Make sure all these packages are installed in your R environment.**
+
+
+
  
