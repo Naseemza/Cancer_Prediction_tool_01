@@ -9,7 +9,7 @@ This R program performs analysis on **PDB (Protein Data Bank)** structures using
 - Automatic chain selection for PDB structures with multiple chains.
 - Computes important metrics like **Silhouette Score**, **Hull Area**, **PEA-Variance**, **RMSE**, **SER**, and **SER-scaled** values.
 - Generates two plots:
-  - `PDBid-enhanced-convex-hill-plot.png`
+  - `PDBid-enhanced-convex-hull-plot.png`
   - `PDBid-umap-kmeans-plot.png`
 - Supports further biological and cancer-related research using PDB analysis.
 
@@ -57,7 +57,7 @@ Follow these steps to generate the `entropy.xls` file:
 - ###BStep 4: Create a Residue Column
   - In the Excel sheet, create a new column titled residue.
 - ### Step 5: Apply Formula for Bio3D-Compatible Residue Names
-  - In the first cell under the residue column (e.g., F2), enter the following formula:
+  - In the first cell under the residue column (e.g., `F2`), enter the following formula:
           
             =C2&"."&B2&"."&D2
   
@@ -71,24 +71,24 @@ Follow these steps to generate the `energy.xlsx` file:
 
 - ### Step 1: Download the PDB File
   - Go to the Protein Data Bank and download the PDB file for your desired PDB ID.
-- ### Step 2: Install and Open Swiss-PDB-Viewer
-  - Download and install Swiss-PDB-Viewer (SPDBV) from here.
-  - Open the PDB file using Swiss-PDB-Viewer.
+- ### Step 2: Install and Open `Swiss-PDB_Viewer`
+  - Download and install `Swiss-PDB-Viewer` (SPDBV) from here.
+  - Open the `PDB file` using `Swiss-PDB-Viewer`.
 - ### Step 3: Select All Residues
   - In Swiss-PDB-Viewer, go to the Select menu and choose All residues.
 - ### Step 4: Compute Energy
-  - Go to the Tools menu and select Compute Energy (Force Field).
+  - Go to the Tools menu and select `Compute Energy (Force Field)`.
 - ### Step 5: Confirm Energy Calculation
   - A dialog box will appear. Click OK to proceed with the energy calculation.
 - ### Step 6: Locate the Output File
   - After calculation, navigate to the installation folder of Swiss-PDB-Viewer.
-  - Inside the temp folder, you will find an energy.E1 file.
-  - Open this file using Notepad.
+  - Inside the temp folder, you will find an `energy.E1` file.
+  - Open this file using `Notepad`.
 - ### Step 7: Transfer Data to Excel
-  - Copy all the table data from the energy.E1 file and paste it into an Excel sheet.
+  - Copy all the table data from the `energy.E1` file and paste it into an `Excel sheet`.
 - ### Step 8: Modify the Excel Sheet
   - Remove the columns titled:
-    - Bonds, Angles , Torsion, Improper, Electrostatic, Constraint. 
+    - `Bonds, Angles , Torsion, Improper, Electrostatic, Constraint`. 
   - Insert a column to the right of the residue column.
     - Use the formula to combine relevant columns for Bio3D compatibility in B2 cell and scroll it down till end.
       ```excel
