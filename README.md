@@ -69,5 +69,53 @@ Once the formula is applied across all relevant rows, save the file as entropy-p
 
 
 
+# Usage
+- Step 1: Load the Program
+To start the program, run the R script containing the main program code using the source() function:
+
+```r
+source("run_program.R")
+```
+Step 2: Execute the Program
+To execute the analysis, call the `run_program` function with the following parameters:
+
+- PDBID – Protein Data Bank identifier (e.g., `"4o33"`)
+- Path to the entropy file (`entropy_4o33.xls`)
+- Path to the energy file (`energy_4o33.xls`)
+```r
+run_program(PDBID, "path/to/entropy.xls", "path/to/energy.xls")
+```
+
+# Program Behavior
+- Single Chain PDB: The program will automatically execute for single-chain PDB files.
+- Multiple Chains: If multiple chains are present, the user will be prompted to select a chain ID (e.g., "A" or "B").
+## Output
+The program produces the following outputs:
+- PDB ID
+- Final_result: A data frame that contains the following analysis details:
+- Silhouette score
+- Convex hull area
+- MBR area
+- RMSE
+- SER and SER-scaled values
+## Plots:
+- `PDBID-enhanced-convex-hull-plot.png`: Convex hull and MBR area plot visualizing the structure.
+- `PDBID-umap-kmeans-plot.png`: UMAP and k-means clustering plot.
+Both the data frame and plots will be stored in the working directory for further analysis.
+
+# Example
+To analyze a PDB file, you can use the following example code:
+
+```r
+run_program("4o33", "/path/to/entropy_4o33.xls", "/path/to/energy_4o33.xls")
+```
+If 4o33 contains multiple chains, you will be prompted to select a chain:
+
+```r
+Select chain ID (e.g., A, B): A
+```
+# Analysis Results
+The output Final_result can be used to check if the analyzed PDB location corresponds to known cancer types. Statistical metrics such as silhouette scores, ratio and scale_SER score results provide insight into protein misfolding behavior.
+
 
  
