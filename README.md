@@ -41,6 +41,32 @@ install.packages(c("bio3d", "cluster", "ggplot2", "umap", "readxl", "dplyr",
 - `gridExtra`: For arranging multiple ggplots.
 - `reshape2`: For data reshaping.
 
+# Generating `entropy.xls` File
+Follow these steps to generate the `entropy.xls` file:
+
+- Step 1: Access the Packing Entropy Webserver
+  Go to the Packing Entropy Webserver (link to the actual webserver).
+  Input your PDB ID in the designated dialog box.
+  Complete the CAPTCHA and press the Submit button.
+- Step 2: Download the output.txt File
+  After some processing time, the server will generate an output.txt file.
+Download this file to your local system.
+- Step 3: Import output.txt to Excel
+Open Excel and import the output.txt file.
+Choose delimited when importing and set the delimiter based on the structure of the file.
+- Step 4: Create a Residue Column
+In the Excel sheet, create a new column titled residue.
+- Step 5: Apply Formula for Bio3D-Compatible Residue Names
+In the first cell under the residue column (e.g., F2), enter the following formula:
+
+```excel
+=C2&"."&B2&"."&D2
+```
+This will combine the chain ID, residue position, and residue name similar to Bio3D residue format.
+
+- Step 6: Save the File as entropy-pdbid.xlsx
+Once the formula is applied across all relevant rows, save the file as entropy-pdbid.xlsx, replacing pdbid with your actual PDB ID (e.g., entropy-1A2B.xlsx).
+
 
 
 
