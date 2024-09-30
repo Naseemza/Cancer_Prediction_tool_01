@@ -23,6 +23,24 @@ The following R packages are required to run the program. You can install them u
 install.packages(c("bio3d", "cluster", "ggplot2", "umap", "readxl", "dplyr", 
                    "geometry", "MASS", "FactoMineR", "dbscan", "sf", 
                    "ggrepel", "neuralnet", "gridExtra", "reshape2"))
+```
+## Package Descriptions:
+- `bio3d`: For PDB structure analysis.
+- `cluster`: For clustering algorithms.
+- `ggplot2`: For data visualization.
+- `umap`: For dimension reduction and clustering.
+- `readxl`: For reading Excel files.
+- `dplyr`: For data manipulation.
+- `geometry`: For convex hull and geometry-based calculations.
+- `MASS`: For Mahalanobis distance calculation.
+- `FactoMineR`: For PCA analysis.
+- `dbscan`: For DBSCAN clustering.
+- `sf`: For minimum bounding rectangle (MBR).
+- `ggrepel`: For better label placement in plots.
+- `neuralnet`: For neural network computations.
+- `gridExtra`: For arranging multiple ggplots.
+- `reshape2`: For data reshaping.
+
 
 
 
