@@ -44,39 +44,72 @@ install.packages(c("bio3d", "cluster", "ggplot2", "umap", "readxl", "dplyr",
 # Generating `entropy.xls` File
 Follow these steps to generate the `entropy.xls` file:
 
-- Step 1: Access the Packing Entropy Webserver
-  Go to the Packing Entropy Webserver (link to the actual webserver).
-  Input your PDB ID in the designated dialog box.
-  Complete the CAPTCHA and press the Submit button.
-- Step 2: Download the output.txt File
-  After some processing time, the server will generate an output.txt file.
-Download this file to your local system.
-- Step 3: Import output.txt to Excel
-Open Excel and import the output.txt file.
-Choose delimited when importing and set the delimiter based on the structure of the file.
-- Step 4: Create a Residue Column
-In the Excel sheet, create a new column titled residue.
-- Step 5: Apply Formula for Bio3D-Compatible Residue Names
-In the first cell under the residue column (e.g., F2), enter the following formula:
+- ### Step 1: Access the Packing Entropy Webserver
+  - Go to the Packing Entropy Webserver (link to the actual webserver).
+  - Input your PDB ID in the designated dialog box.
+  - Complete the CAPTCHA and press the Submit button.
+- ### Step 2: Download the output.txt File
+  - After some processing time, the server will generate an output.txt file.
+  - Download this file to your local system.
+- ### Step 3: Import output.txt to Excel
+  - Open Excel and import the output.txt file.
+  - Choose delimited when importing and set the delimiter based on the structure of the file.
+- ###BStep 4: Create a Residue Column
+  - In the Excel sheet, create a new column titled residue.
+- ### Step 5: Apply Formula for Bio3D-Compatible Residue Names
+  - In the first cell under the residue column (e.g., F2), enter the following formula:
+          
+            =C2&"."&B2&"."&D2
+  
+  - This will combine the chain ID, residue position, and residue name similar to Bio3D residue format.
 
-```excel
-=C2&"."&B2&"."&D2
-```
-This will combine the chain ID, residue position, and residue name similar to Bio3D residue format.
+- ### Step 6: Save the File as `entropy_pdbid.xlsx` 
+  - Once the formula is applied across all relevant rows, save the file as entropy-pdbid.xlsx, replacing pdbid with your actual PDB ID (e.g., entropy_4o33.xlsx).
 
-- Step 6: Save the File as entropy-pdbid.xlsx
-Once the formula is applied across all relevant rows, save the file as entropy-pdbid.xlsx, replacing pdbid with your actual PDB ID (e.g., entropy-1A2B.xlsx).
+# Generating `energy.xlsx` File
+Follow these steps to generate the `energy.xlsx` file:
 
-
+- ### Step 1: Download the PDB File
+  - Go to the Protein Data Bank and download the PDB file for your desired PDB ID.
+- ### Step 2: Install and Open Swiss-PDB-Viewer
+  - Download and install Swiss-PDB-Viewer (SPDBV) from here.
+  - Open the PDB file using Swiss-PDB-Viewer.
+- ### Step 3: Select All Residues
+  - In Swiss-PDB-Viewer, go to the Select menu and choose All residues.
+- ### Step 4: Compute Energy
+  - Go to the Tools menu and select Compute Energy (Force Field).
+- ### Step 5: Confirm Energy Calculation
+  - A dialog box will appear. Click OK to proceed with the energy calculation.
+- ### Step 6: Locate the Output File
+  - After calculation, navigate to the installation folder of Swiss-PDB-Viewer.
+  - Inside the temp folder, you will find an energy.E1 file.
+  - Open this file using Notepad.
+- ### Step 7: Transfer Data to Excel
+  - Copy all the table data from the energy.E1 file and paste it into an Excel sheet.
+- ### Step 8: Modify the Excel Sheet
+  - Remove the columns titled:
+    - Bonds, Angles , Torsion, Improper, Electrostatic, Constraint. 
+  - Insert a column to the right of the residue column.
+    - Use the formula to combine relevant columns for Bio3D compatibility in B2 cell and scroll it down till end.
+      ```excel
+      =IF(LEN(A2) = 3, A2, LEFT(A2, LEN(A2)-1))
+      ```
+  - Insert another column to the left of the Total column and name it Variable.
+    - Use the following formula in cell E2:
+      ```
+      =D2&"."&C2&"."&B2
+      ```
+- Step 9: Save the Excel File as `energy_pdbid.xlsx`
+  - Once the modifications are complete, save the file as `energy_pdbid.xlsx`, replacing pdbid with your actual PDB ID (e.g., `energy_4o33.xlsx`).
 
 # Usage
-- Step 1: Load the Program
+- ### Step 1: Load the Program
 To start the program, run the R script containing the main program code using the source() function:
 
 ```r
 source("run_program.R")
 ```
-Step 2: Execute the Program
+- ### Step 2: Execute the Program
 To execute the analysis, call the `run_program` function with the following parameters:
 
 - PDBID – Protein Data Bank identifier (e.g., `"4o33"`)
@@ -115,7 +148,7 @@ If 4o33 contains multiple chains, you will be prompted to select a chain:
 Select chain ID (e.g., A, B): A
 ```
 # Analysis Results
-The output Final_result can be used to check if the analyzed PDB location corresponds to known cancer types. Statistical metrics such as silhouette scores, ratio and scale_SER score results provide insight into protein misfolding behavior.
+The output Final_result can be used to check if the analyzed PDB location corresponds to known cancer types. Statistical metrics such as `silhouette scores`, `ratio` and `scale_SER` score results provide insight into protein misfolding behavior.
 
 
  
