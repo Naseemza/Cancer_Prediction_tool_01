@@ -45,7 +45,7 @@ install.packages(c("bio3d", "cluster", "ggplot2", "umap", "readxl", "dplyr",
 Follow these steps to generate the `entropy.xls` file:
 
 - ### Step 1: Access the Packing Entropy Webserver
-  - Go to the Packing Entropy Webserver (link to the actual webserver).
+  - Go to the Packing Entropy Webserver ([link to the actual webserver](https://packing-entropy.bb.iastate.edu/)).
   - Input your PDB ID in the designated dialog box.
   - Complete the CAPTCHA and press the Submit button.
 - ### Step 2: Download the output.txt File
@@ -72,7 +72,7 @@ Follow these steps to generate the `energy.xlsx` file:
 - ### Step 1: Download the PDB File
   - Go to the Protein Data Bank and download the PDB file for your desired PDB ID.
 - ### Step 2: Install and Open `Swiss-PDB_Viewer`
-  - Download and install `Swiss-PDB-Viewer` (SPDBV) from here.
+  - Download and install `Swiss-PDB-Viewer` (SPDBV) from here ([download link](https://spdbv.unil.ch/disclaim.html#)).
   - Open the `PDB file` using `Swiss-PDB-Viewer`.
 - ### Step 3: Select All Residues
   - In Swiss-PDB-Viewer, go to the Select menu and choose All residues.
