@@ -129,6 +129,7 @@ The program produces the following outputs:
 - Silhouette score
 - Convex hull area
 - MBR area
+- Ratio of MNR_area/Hull_area
 - RMSE
 - SER and SER-scaled values
 ## Plots:
