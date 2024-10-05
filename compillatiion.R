@@ -1,8 +1,5 @@
 
 run_program <- function(pdb_id,entropy_file_path, energy_file_path){
-  
-  
-  
   # Load required libraries
   library(bio3d)
   library(cluster)
@@ -20,7 +17,7 @@ run_program <- function(pdb_id,entropy_file_path, energy_file_path){
   library(gridExtra)
   library(reshape2)
   set.seed(123)  # Set a random seed
- 
+  
   # Unified function to process a PDB ID
   process_pdb <- function(pdb_id, chain_id = NULL, num_clusters = 5, output_dir = getwd() ) {
     
@@ -151,10 +148,7 @@ run_program <- function(pdb_id,entropy_file_path, energy_file_path){
     assign(paste0("kmeans_result_", pdb_id), kmeans_result, envir = .GlobalEnv)
     assign(paste0("clustered_data_", pdb_id, "_umap"), umap_df, envir = .GlobalEnv)
     assign("silhouette_df", silhouette_df, envir = .GlobalEnv)
-  }
-  
-  
-  
+  }  
   
   load_and_merge_data <- function(pdb_id, entropy_file_path, energy_file_path) {
     cat("\nProcessing PDB ID:", pdb_id, "\n")
@@ -248,10 +242,7 @@ run_program <- function(pdb_id,entropy_file_path, energy_file_path){
       warning(paste("Missing tor or clustered data for PDB ID:", pdb_id))
       return(NULL)  # Return NULL if required data is missing
     }
-  }
-  
-  
-  
+  }  
   
   extract_cluster_sums_and_averages <- function(pdb_data) {
     # Group by cluster and summarize entropy and energy
@@ -380,7 +371,7 @@ run_program <- function(pdb_id,entropy_file_path, energy_file_path){
     ggsave(paste0(pdb_id, "_enhanced_geometric_measures_plot.png"), plot = p, width = 10, height = 8, dpi = 300)
     
     # Create and return a summary of calculations
-    result <- data.frame(
+    convex_hull_result <- data.frame(
       pdb_id = pdb_id,
       hull_area = hull_area,
       mbr_area = mbr_area,
@@ -390,15 +381,10 @@ run_program <- function(pdb_id,entropy_file_path, energy_file_path){
     )
     
     # Print the summary results
-    print(result)
-    
-    # Return the result
-    return(result)
-  }
-  
-  
-  
-  
+    print(convex_hull_result)
+
+    assign("convex_hull_result", convex_hull_result, envir = .GlobalEnv)
+  }  
   
   compute_eigenvalues_from_merged_data <- function(merged_df) {
     
@@ -431,18 +417,14 @@ run_program <- function(pdb_id,entropy_file_path, energy_file_path){
       cor_matrix <- cor(df_numeric, use = "pairwise.complete.obs")
       cor_matrix_abs <- abs(cor_matrix)
       cor_matrix_abs[is.na(cor_matrix_abs)] <- 0
-      cor_df <- as.data.frame(cor_matrix_abs)
-      cor_df$variable <- rownames(cor_df)
-      
-      return(cor_df)
+      return(cor_matrix_abs)
     }
     
     cor_matrix_list <- lapply(sub_dataframe_list_reduced, compute_cor_matrix_abs_no_na)
     
     # Step 5: Compute eigenvalues
     compute_eigenvalues <- function(cor_matrix, matrix_name) {
-      cor_matrix_numeric <- cor_matrix[, !colnames(cor_matrix) %in% "variable", drop = FALSE]
-      eigen_values <- eigen(as.matrix(cor_matrix_numeric))$values
+      eigen_values <- eigen(cor_matrix)$values
       
       result <- data.frame(
         matrix_name = rep(matrix_name, length(eigen_values)),
@@ -470,10 +452,107 @@ run_program <- function(pdb_id,entropy_file_path, energy_file_path){
     
     # Step 8: Sort columns
     eigen_df_wide <- eigen_df_wide[, c("matrix_name", sort(colnames(eigen_df_wide)[-1]))]
+    
+    # Save eigen_df to global environment
     assign("eigen_df", eigen_df_wide, envir = .GlobalEnv)
+    
+    # Step 9: Plot heatmap of correlation matrices and save plots
+    plot_correlation_heatmap <- function(cor_matrix, title, file_name) {
+      library(reshape2)  # To use melt()
+      library(ggplot2)
+      
+      # Convert correlation matrix to long format for ggplot
+      melted_cor_matrix <- melt(cor_matrix)
+      
+      # Plot the heatmap using ggplot
+      heatmap_plot <- ggplot(data = melted_cor_matrix, aes(x = Var1, y = Var2, fill = value)) +
+        geom_tile(color = "white") +
+        scale_fill_gradient2(low = "blue", high = "red", mid = "white", 
+                             midpoint = 0, limit = c(0, 1), space = "Lab", 
+                             name = "Correlation") +
+        theme_minimal() +
+        
+        # Customize text for bold fonts and dark axis
+        theme(axis.text.x = element_text(angle = 45, vjust = 1, size = 12, hjust = 1, face = "bold", color = "black"),
+              axis.text.y = element_text(size = 12, face = "bold", color = "black"),
+              axis.title = element_text(size = 14, face = "bold"),
+              panel.grid.major = element_blank(),
+              panel.grid.minor = element_blank(),
+              plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
+              axis.line = element_line(color = "black"),
+              axis.ticks = element_line(color = "black")) +
+        
+        # Add title and axis labels
+        labs(title = title, x = "Variables", y = "Variables") +
+        
+        # Keep axis text dark
+        theme(axis.line = element_line(color = "black", size = 1),
+              axis.ticks = element_line(color = "black", size = 1))
+      
+      # Save the plot
+      ggsave(file_name, plot = heatmap_plot, width = 8, height = 6)
+      
+      return(heatmap_plot)
+    }
+    
+    # Step 10: Plot and save the heatmaps for each sub-correlation matrix
+    for (name in names(cor_matrix_list)) {
+      cor_matrix <- cor_matrix_list[[name]]
+      
+      # Define file name for saving the plot
+      file_name <- paste0("correlation_heatmap_cluster_", name, ".png")
+      
+      # Call the function to plot and save heatmap for each cluster
+      heatmap_plot <- plot_correlation_heatmap(cor_matrix, paste("Correlation Heatmap - Cluster", name), file_name)
+      
+      # Print the plot in the R environment
+      print(heatmap_plot)
+    }
+    
+    # Step 11: Plot the eigenvalues and customize the plot appearance
+    plot_eigenvalues <- function(eigen_df) {
+      library(ggplot2)
+      
+      # Update the plot to include 'Eigenvalue Number' and label 1-8 on x-axis
+      eigen_plot <- ggplot(eigen_df, aes(x = rank, y = eigenvalue, color = matrix_name)) +
+        geom_line(size = 1.2) +
+        geom_point(size = 2) +
+        scale_x_continuous(breaks = 1:8, labels = paste0("E", 1:8)) +  # Label all eigenvalue numbers 1 to 8
+        
+        theme_minimal() +
+        
+        # Bold fonts for axis text and titles
+        theme(axis.text.x = element_text(size = 12, face = "bold", color = "black"),
+              axis.text.y = element_text(size = 12, face = "bold", color = "black"),
+              axis.title = element_text(size = 14, face = "bold"),
+              panel.grid.major = element_blank(),
+              panel.grid.minor = element_blank(),
+              plot.title = element_text(size = 16, face = "bold", hjust = 0.5)) +
+        
+        # Update labels for the axis and title
+        labs(title = "Eigenvalue Distribution by Cluster", 
+             x = "Eigenvalue Number", 
+             y = "Eigenvalue") +
+        
+        # Dark axis lines and ticks
+        theme(axis.line = element_line(color = "black", size = 1),
+              axis.ticks = element_line(color = "black", size = 1))
+      
+      # Save the eigenvalue plot
+      ggsave("eigenvalue_plot.png", plot = eigen_plot, width = 8, height = 6)
+      
+      return(eigen_plot)
+    }
+    
+    # Call the function to plot eigenvalues
+    eigen_plot <- plot_eigenvalues(eigen_df)
+    
+    # Print the eigenvalue plot
+    print(eigen_plot)
+    
+    # Return eigen_df_wide
     return(eigen_df_wide)
   }
-  
   
   
   merge_dataframes <- function(cluster_sum_average, eigen_df) {
@@ -540,28 +619,6 @@ run_program <- function(pdb_id,entropy_file_path, energy_file_path){
   }
   
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
   process_pdb(pdb_id)
   load_and_merge_data(pdb_id,entropy_file_path, energy_file_path)
   extract_cluster_sums_and_averages(merged_df)
@@ -580,22 +637,17 @@ run_program <- function(pdb_id,entropy_file_path, energy_file_path){
   }
   # Assuming you have a dataframe named merged_df
   create_ann_model(merged_df, dependent_var, independent_vars)
-  final_result <- cbind(silhouette_df ,result_row, convex_hull_result ,ann_metrics)
+  final_result <- cbind(silhouette_df ,result_row, convex_hull_result, ann_metrics)
   assign("Final_result", final_result, envir = .GlobalEnv)
-  analysis_result <- final_result[,c("PDB", "avg_silhouette_score","hull_area","pca_variance", "mbr_area", "rmse", "ser", "scaled_ser" )]
+  analysis_result <- final_result[,c("PDB", "avg_silhouette_score","hull_area", "mbr_area", "mbr_to_hull_ratio", "rmse", "ser", "scaled_ser" )]
   assign("analysis_result", analysis_result, envir = .GlobalEnv)
   print(analysis_result)
 }
-  
+
+
+
+
 run_program("5bon", "D:\\2024 account\\all entropy data\\entropy_5bon.xlsx", "D:\\2024 account\\all pdb files\\energy file for all pdb\\energy_5bon.xlsx")
 run_program("3s94", "D:\\2024 account\\all entropy data\\entropy_3s94.xlsx", "D:\\2024 account\\all pdb files\\energy file for all pdb\\energy_3s94.xlsx")
 
 run_program("2ZZP", "D:\\2024 account\\new validation data\\all entropy\\entropy_2zzp.xlsx", "D:\\2024 account\\new validation data\\all energy\\energy_2zzp.xlsx")
-
-
-
-
-entropy_file_path <- paste0("D:\\2024 account\\new validation data\\all entropy\\entropy_", pdb_id, ".xlsx")
-energy_file_path <- paste0("D:\\2024 account\\new validation data\\all energy\\energy_", pdb_id, ".xlsx")
-
-
